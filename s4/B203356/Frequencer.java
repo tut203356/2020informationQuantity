@@ -232,8 +232,7 @@ public class Frequencer implements FrequencerInterface{
 
         int suffixNum = suffixArray[i];
 
-        if( (mySpace.length-suffixNum ) < (k-j) ) 
-            return -1;
+        
         if(j>=k)
             return 1;
         
@@ -244,6 +243,12 @@ public class Frequencer implements FrequencerInterface{
                 return 1;
             j++;
             suffixNum++;
+            if(suffixNum==mySpace.length){
+                if(j==k)
+                    return 0;
+                else
+                    return -1;
+            }
         }
         return 0; 
         
@@ -359,10 +364,8 @@ public class Frequencer implements FrequencerInterface{
                 if(targetCompare(mid+1, start, end) !=0 )
                     return mid+1;
                 lower=mid+1;
-            }else{
-                if(mid==0)
-                    return 0; 
-                if(targetCompare(mid-1, start,end)==0)
+            }else{ 
+                if(mid>0 && targetCompare(mid-1, start,end)==0)
                     return mid;
                 if(midRes>0)
                     upper=mid-1;
@@ -425,12 +428,13 @@ public class Frequencer implements FrequencerInterface{
             System.out.println("end : " + frequencerObject.subByteEndIndex(0, frequencerObject.myTarget.length));*/
 
             frequencerObject = new Frequencer();
-            frequencerObject.setSpace("Hi Ho Hi Ho".getBytes());
-            frequencerObject.setTarget("Ho".getBytes());
-            System.out.println("start : " + frequencerObject.subByteStartIndex(0, frequencerObject.myTarget.length));
-            System.out.println("end : " + frequencerObject.subByteEndIndex(0, frequencerObject.myTarget.length));
+            frequencerObject.setSpace("btori".getBytes());
+            frequencerObject.setTarget("atoriii".getBytes());
+            System.out.println("start : " + frequencerObject.subByteStartIndex(0, 7));
+            System.out.println("end : " + frequencerObject.subByteEndIndex(0, 7));
+            frequencerObject.printSuffixArray();
 
-            int result = frequencerObject.subByteFrequency(2,4);
+            int result = frequencerObject.subByteFrequency(0,7);
             System.out.println("Freq = "+ result+" ");
             //if(4 == result) { System.out.println("OK"); } else {System.out.println("WRONG"); }
         }
