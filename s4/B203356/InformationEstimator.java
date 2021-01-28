@@ -28,6 +28,8 @@ public class InformationEstimator implements InformationEstimatorInterface {
     FrequencerInterface myFrequencer;  // Object for counting frequency
     Map<ByteBuffer, Double> minimum_iqRes;
     Map<ByteBuffer, Double> iqRes;
+    boolean targetReady=false;
+    boolean spaceReady=false;
 
     byte[] subBytes(byte[] x, int start, int end) {
         // corresponding to substring of String for byte[],
@@ -44,15 +46,25 @@ public class InformationEstimator implements InformationEstimatorInterface {
 
     @Override
     public void setTarget(byte[] target) {
-        myTarget = target;
+        if(target.length>0){
+            targetReady=true;
+            myTarget = target;
+        }else{
+            targetReady=false;
+        }
     }
 
     @Override
     public void setSpace(byte[] space) {
-        myFrequencer = new Frequencer();
-        mySpace = space; myFrequencer.setSpace(space);
-        iqRes = new HashMap<ByteBuffer, Double>();
-        minimum_iqRes = new HashMap<ByteBuffer, Double>();
+        if(space.length>0){
+            spaceReady=true;
+            myFrequencer = new Frequencer();
+            mySpace = space; myFrequencer.setSpace(space);
+            iqRes = new HashMap<ByteBuffer, Double>();
+            minimum_iqRes = new HashMap<ByteBuffer, Double>();
+        }else{
+            spaceReady=false;
+        }
     }
 
     double getIQ(byte[] target){
@@ -159,8 +171,15 @@ public class InformationEstimator implements InformationEstimatorInterface {
         }
         return value;
         */
+        if(targetReady==false)
+            return 0;
+        if(spaceReady==false)
+            return Double.MAX_VALUE;
 
-        return culc_minIQ(myTarget);
+        double res = culc_minIQ(myTarget);
+        if(Double.isInfinite(res))
+            return Double.MAX_VALUE;
+        return res;
 
     }
 
@@ -168,10 +187,10 @@ public class InformationEstimator implements InformationEstimatorInterface {
         InformationEstimator myObject;
         double value;
         myObject = new InformationEstimator();
-        myObject.setSpace("3210321001230123".getBytes());
+        myObject.setSpace("12012362436".getBytes());
         myObject.setTarget("0".getBytes());
         value = myObject.estimation();
-        System.out.println(">0 "+value);
+        System.out.println("> "+value);
         myObject.setTarget("01".getBytes());
         value = myObject.estimation();
         System.out.println(">01 "+value);
@@ -184,7 +203,7 @@ public class InformationEstimator implements InformationEstimatorInterface {
         myObject.setTarget("123".getBytes());
         value = myObject.estimation();
         System.out.println(">123 "+value);
-        myObject.printMap();
+        //myObject.printMap();
     }
 }
 
